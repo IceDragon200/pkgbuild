@@ -1,0 +1,18 @@
+# READMEH
+In case you (IceDragon) forgot how to make AUR packages:
+
+https://wiki.archlinux.org/index.php/Makepkg
+
+1. Update PKGBUILD with new version of packages
+2. makepkg -o
+   To download new source files
+3. `updpkgsums`
+   To update md5sums
+4. `makepkg` to test if package builds correctly
+
+# this point, is for your uploading to AUR.
+5. `mkaurball`
+   To generate a AUR tarball
+   provided by: `pkgbuild-introspection` package
+6. Upload to AUR!
+7. Congrats you've updated your AUR package! :D
