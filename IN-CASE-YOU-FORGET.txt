@@ -1,4 +1,4 @@
-# READMEH
+# README
 In case you (IceDragon) forgot how to make AUR packages:
 
 https://wiki.archlinux.org/index.php/Makepkg
@@ -11,8 +11,10 @@ https://wiki.archlinux.org/index.php/Makepkg
 4. `makepkg` to test if package builds correctly
 
 # this point, is for your uploading to AUR.
-5. `mkaurball`
-   To generate a AUR tarball
-   provided by: `pkgbuild-introspection` package
-6. Upload to AUR!
+5. `makepkg --printsrcinfo > .SRCINFO`
+   To update the .SRCINFO
+6. `git add .SRCINFO PKGBUILD
+    git commit -m "YEAH"
+    git push origin master
+   `
 7. Congrats you've updated your AUR package! :D
