@@ -1,0 +1,65 @@
+# Maintainer: Sven-Hendrik Haase <svenstaro@gmail.com>
+# Contributor: Hilton Medeiros <medeiros.hilton AT gmail DOT com>
+# Contributor: Ali H. Caliskan <ali.h.caliskan AT gmail DOT com>
+# Contributor: Paolo Fagni <paolo.fagni AT mail DOT com>
+# Contributor: Lukas Kropatschek <lukas.krop AT gmail DOT com>
+
+pkgbase=irrlicht
+pkgname=('irrlicht' 'irrlicht-docs')
+pkgver=1.9.0
+pkgrel=1
+pkgdesc="An open source high performance realtime 3D graphics engine."
+arch=('x86_64')
+url="https://github.com/minetest/irrlicht/tree/master"
+license=('ZLIB')
+depends=('libgl' 'libjpeg' 'bzip2' 'libpng')
+makedepends=('mesa' 'unzip' 'libxcursor')
+optdepends=('libxcursor: run examples')
+source=("https://github.com/minetest/irrlicht/archive/${pkgver}mt0.tar.gz")
+noextract=(${pkgver}mt0.tar.gz)
+md5sums=('1e943ebaa33094c185db1d976fe4ba5f')
+
+prepare() {
+  if [[ ! -d $pkgbase-$pkgver ]]; then
+    tar -xf "${pkgver}mt0.tar.gz"
+    mv irrlicht-${pkgver}mt0 $pkgbase-$pkgver
+
+    sed -r '/^#define _IRR_USE_NON_SYSTEM_(JPEG_LIB|LIB_PNG|ZLIB|BZLIB)_/d' -i $pkgbase-$pkgver/include/IrrCompileConfig.h
+  fi
+  cd $pkgbase-$pkgver
+
+  cmake . -DCMAKE_INSTALL_PREFIX=$pkgdir/usr
+}
+
+build() {
+  cd $pkgbase-$pkgver
+
+  make -j$(nproc) NDEBUG=1
+}
+
+package_irrlicht() {
+  cd $pkgbase-$pkgver
+
+  make install
+
+  cd "$srcdir"/$pkgbase-$pkgver/
+  install -Dm644 README.md $pkgdir/usr/share/licenses/$pkgbase/LICENSE
+
+  # fix headers permissions
+  chmod 644 "$pkgdir"/usr/include/$pkgbase/*
+
+  ln -s libIrrlicht.so.$pkgver "$pkgdir"/usr/lib/libIrrlicht.so.1
+}
+
+package_irrlicht-docs() {
+  cd $pkgbase-$pkgver/
+
+  install -d "$pkgdir"/usr/share/$pkgbase "$pkgdir"/usr/share/doc/$pkgbase
+
+  # install media files for examples
+  cp -r media "$pkgdir"/usr/share/$pkgbase
+
+  # install documentation
+  cp -r doc/* "$pkgdir"/usr/share/doc/$pkgbase
+  rm -f "$pkgdir"/usr/share/doc/$pkgbase/*.txt
+}
